@@ -129,7 +129,7 @@ func generateInputPartitionings(sweepableInputs []txInput,
 	return sets, nil
 }
 
-// createSweepTx builds a signed tx spending the inputs to a output script.
+// createSweepTx builds a signed tx spending the inputs to a the output script.
 func createSweepTx(inputs []input.Input, outputPkScript []byte,
 	currentBlockHeight uint32, feePerKw chainfee.SatPerKWeight,
 	signer input.Signer) (*wire.MsgTx, error) {
