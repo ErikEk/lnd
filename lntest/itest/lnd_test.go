@@ -14480,15 +14480,21 @@ func TestLightningNetworkDaemon(t *testing.T) {
 	defer func() {
 		miner.TearDown()
 
-		// After shutting down the miner, we'll make a copy of the log
-		// file before deleting the temporary log dir.
-		logFile := fmt.Sprintf(
-			"%s/%s/btcd.log", minerLogDir, harnessNetParams.Name,
-		)
-		err := lntest.CopyFile("./output_btcd_miner.log", logFile)
+		// After shutting down the miner, we'll make a copy of
+		// the log files before deleting the temporary log dir.
+		files, err := ioutil.ReadDir(minerLogDir + "/" + harnessNetParams.Name)
 		if err != nil {
-			fmt.Printf("unable to copy file: %v\n", err)
+			fmt.Printf("unable to read log directory: %v\n", err)
 		}
+
+		for _, file := range files {
+			err := lntest.CopyFile("output_miner_"+file.Name(),
+				minerLogDir+"/"+harnessNetParams.Name+"/"+file.Name())
+			if err != nil {
+				fmt.Printf("unable to copy file: %v\n", err)
+			}
+		}
+
 		if err = os.RemoveAll(minerLogDir); err != nil {
 			fmt.Printf("Cannot remove dir %s: %v\n",
 				minerLogDir, err)
