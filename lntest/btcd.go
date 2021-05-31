@@ -6,7 +6,9 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/btcsuite/btcd/btcjson"
 	"github.com/btcsuite/btcd/chaincfg"
@@ -116,17 +118,27 @@ func NewBackend(miner string, netParams *chaincfg.Params) (
 		if err := chainBackend.TearDown(); err != nil {
 			errStr += err.Error() + "\n"
 		}
-
 		// After shutting down the chain backend, we'll make a copy of
-		// the log file before deleting the temporary log dir.
-		logFile := baseLogDir + "/" + netParams.Name + "/btcd.log"
-		logDestination := fmt.Sprintf(
-			"%s/output_btcd_chainbackend.log", GetLogDir(),
-		)
-		err := CopyFile(logDestination, logFile)
+		// the log files before deleting the temporary log dir.
+		files, err := ioutil.ReadDir(baseLogDir + "/" + netParams.Name)
 		if err != nil {
-			errStr += fmt.Sprintf("unable to copy file: %v\n", err)
+			errStr += fmt.Sprintf(
+				"unable to read log directory: %v\n", err,
+			)
 		}
+
+		for _, file := range files {
+
+			logFile := baseLogDir + "/" + netParams.Name + "/" + file.Name()
+			logDestination := fmt.Sprintf(
+				"%s/output_chainbackend_%s", GetLogDir(), file.Name(),
+			)
+			err := CopyFile(filepath.Clean(logDestination), logFile)
+			if err != nil {
+				errStr += fmt.Sprintf("unable to copy file: %v\n", err)
+			}
+		}
+
 		if err = os.RemoveAll(baseLogDir); err != nil {
 			errStr += fmt.Sprintf(
 				"cannot remove dir %s: %v\n", baseLogDir, err,
