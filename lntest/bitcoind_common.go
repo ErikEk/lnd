@@ -130,7 +130,7 @@ func newBackend(miner string, netParams *chaincfg.Params, extraArgs []string) (
 		// After shutting down the chain backend, we'll make a copy of
 		// the log file before deleting the temporary log dir.
 		logDestination := fmt.Sprintf(
-			"%s/output_bitcoind_chainbackend.log", GetLogDir(),
+			"%s/output_chainbackend_bitcoind.log", GetLogDir(),
 		)
 		err := CopyFile(logDestination, logFile)
 		if err != nil {
