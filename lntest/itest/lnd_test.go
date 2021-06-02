@@ -14090,7 +14090,7 @@ func TestLightningNetworkDaemon(t *testing.T) {
 	aliceBobArgs := []string{
 		"--default-remote-max-htlcs=483",
 	}
-
+	fmt.Print("test remove")
 	// Run the subset of the test cases selected in this tranche.
 	for idx, testCase := range testCases {
 		testCase := testCase
