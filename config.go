@@ -1435,8 +1435,8 @@ func ValidateConfig(cfg Config, usageMessage string,
 	// parameters. However we want to also allow existing users to use the
 	// value on the top-level config. If the outer config value is set,
 	// then we'll use that directly.
-	if cfg.SyncFreelist {
-		cfg.DB.Bolt.SyncFreelist = cfg.SyncFreelist
+	if !cfg.SyncFreelist {
+		cfg.DB.Bolt.NoFreelistSync = true
 	}
 
 	// Ensure that the user hasn't chosen a remote-max-htlc value greater
