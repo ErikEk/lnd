@@ -33,6 +33,7 @@ func DefaultDB() *DB {
 		Backend:             BoltBackend,
 		BatchCommitInterval: DefaultBatchCommitInterval,
 		Bolt: &kvdb.BoltConfig{
+			NoFreelistSync:    true,
 			AutoCompactMinAge: kvdb.DefaultBoltAutoCompactMinAge,
 			DBTimeout:         kvdb.DefaultDBTimeout,
 		},
@@ -116,7 +117,7 @@ func (db *DB) GetBackends(ctx context.Context, dbPath string) (
 		DBPath:            dbPath,
 		DBFileName:        dbName,
 		DBTimeout:         db.Bolt.DBTimeout,
-		NoFreelistSync:    !db.Bolt.SyncFreelist,
+		NoFreelistSync:    db.Bolt.NoFreelistSync,
 		AutoCompact:       db.Bolt.AutoCompact,
 		AutoCompactMinAge: db.Bolt.AutoCompactMinAge,
 	})
